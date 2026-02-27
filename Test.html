@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Concedii 2026 - Departament</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 22px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .top-controls {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 12px;
+        }
+
+        /* Banner activ */
+        .active-person-banner {
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 2px solid;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .active-person-text {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .active-person-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* BUTON X */
+        .btn-close-x {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+
+        .btn-close-x:hover {
+            background: rgba(0,0,0,0.2);
+            transform: scale(1.05);
+        }
+
+        /* PANOU SALVARE */
+        .save-panel {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            width: 220px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 16px;
+            z-index: 1000;
+            border: 2px solid #e0e0e0;
+            display: none;
+        }
+
+        .save-panel.show {
+            display: block;
+        }
+
+        .save-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .save-panel-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .save-panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2c3e50;
+            line-height: 1.2;
+        }
+
+        .save-panel-count {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .save-panel-section {
+            margin-bottom: 12px;
+        }
+
+        .save-panel-section-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .save-panel-days {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .save-panel-day {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .save-panel-day.add {
+            background: #d5f5e3;
+            color: #27ae60;
+        }
+
+        .save-panel-day.remove {
+            background: #fadbd8;
+            color: #e74c3c;
+        }
+
+        .save-panel-day-date {
+            flex: 1;
+        }
+
+        .save-panel-day-remove {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.1);
+            cursor: pointer;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .save-panel-day-remove:hover {
+            background: rgba(0,0,0,0.2);
+        }
+
+        .btn-save-final {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-save-final:disabled {
+            background: #95a5a6;
+            color: white;
+            cursor: not-allowed;
+        }
+
+        .btn-save-final.active {
+            animation: pulse-green 1.5s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(39, 174, 96, 0); }
+        }
+
+        /* POP-UP INFO ZI */
+        .day-info-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 24px;
+            z-index: 10001;
+            min-width: 300px;
+            max-width: 400px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .day-info-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .day-info-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .day-info-date-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: #3498db;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .day-info-day-num {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .day-info-day-month {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .day-info-title {
+            flex: 1;
+        }
+
+        .day-info-weekday {
+            font-size: 20px;
+            font-weight: 800;
+            color: #2c3e50;
+        }
+
+        .day-info-year {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .day-info-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .day-info-section {
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .day-info-section.empty {
+            background: #f8f9fa;
+            color: #7f8c8d;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .day-info-section-title {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .day-info-person-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .day-info-person {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+
+        .day-info-person-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .day-info-person-name {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .day-info-holiday {
+            background: #fadbd8;
+            color: #c0392b;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .day-info-weekend {
+            background: #f5f5f5;
+            color: #666;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .btn-close-day-info {
+            width: 100%;
+            padding: 14px;
+            margin-top: 16px;
+            border-radius: 10px;
+            border: none;
+            background: #3498db;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-close-day-info:hover {
+            background: #2980b9;
+        }
+
+        /* Zile de concediu */
+        .vacation-allowance-box {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .allowance-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .allowance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .person-allowance-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 12px;
+            position: relative;
+        }
+
+        .person-allowance-main {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .person-allowance-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .person-allowance-info {
+            flex: 1;
+        }
+
+        .person-allowance-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .allowance-numbers {
+            display: flex;
+            gap: 15px;
+        }
+
+        .allowance-number {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .allowance-number-label {
+            font-size: 10px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+
+        .allowance-number-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .allowance-number-value.used {
+            color: #e74c3c;
+        }
+
+        .allowance-number-value.remaining {
+            color: #27ae60;
+        }
+
+        .allowance-number-value.remaining.warning {
+            color: #f39c12;
+        }
+
+        .allowance-number-value.remaining.danger {
+            color: #e74c3c;
+        }
+
+        .edit-allowance-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: #ecf0f1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .edit-allowance-btn:hover {
+            background: #bdc3c7;
+        }
+
+        .allowance-edit-section {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .allowance-edit-section.show {
+            display: block;
+        }
+
+        .allowance-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .allowance-input-group label {
+            font-size: 12px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .allowance-input-group input {
+            width: 70px;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .person-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .person-selector-title {
+            width: 100%;
+            font-size: 11px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .person-btn {
+            padding: 8px 14px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .person-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .person-btn.selected {
+            border-color: #333;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.8), 0 0 0 4px currentColor;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .legend-title {
+            font-weight: 700;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 20px;
+        }
+
+        .calendar-area {
+            flex: 1;
+        }
+
+        .months-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 12px;
+        }
+
+        .month-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .month-header {
+            padding: 8px 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .month-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .month-table th {
+            background: #f8f9fa;
+            padding: 6px 4px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+        }
+
+        .month-table td {
+            padding: 0;
+            border: 1px solid #e0e0e0;
+            height: 60px;
+            width: 14.28%;
+        }
+
+        .day-cell {
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 2px;
+            cursor: pointer;
+            transition: all 0.1s;
+            position: relative;
+        }
+
+        .day-number {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .holiday-name {
+            font-size: 7px;
+            text-align: center;
+            line-height: 1.1;
+            padding: 0 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .day-cell:hover:not(.disabled):not(.weekend):not(.holiday) {
+            background: #e8f4f8;
+        }
+
+        /* Weekend - gri */
+        .day-cell.weekend {
+            background: #f0f0f0;
+            color: #999;
+        }
+
+        /* Sărbătoare (inclusiv în weekend) - roșu */
+        .day-cell.holiday {
+            background: #c0392b !important;
+            color: white !important;
+            cursor: pointer;
+        }
+
+        .day-cell.holiday .holiday-name {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .vacation-indicators {
+            position: absolute;
+            bottom: 2px;
+            left: 2px;
+            right: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .vac-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 700;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 18px;
+        }
+
+        .vac-indicator.to-add {
+            opacity: 0.7;
+            border: 2px dashed white;
+        }
+
+        .vac-indicator.to-remove {
+            opacity: 0.4;
+            text-decoration: line-through;
+        }
+
+        .vac-indicator-badge {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: 800;
+            background: rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .day-cell.temp-add-Marius { background: rgba(230, 126, 34, 0.3) !important; border: 2px solid #e67e22 !important; }
+        .day-cell.temp-add-Andreea { background: rgba(52, 152, 219, 0.3) !important; border: 2px solid #3498db !important; }
+        .day-cell.temp-add-Uka { background: rgba(39, 174, 96, 0.3) !important; border: 2px solid #27ae60 !important; }
+        .day-cell.temp-add-Flori { background: rgba(241, 196, 15, 0.3) !important; border: 2px solid #f1c40f !important; }
+        .day-cell.temp-add-Gabriel { background: rgba(155, 89, 182, 0.3) !important; border: 2px solid #9b59b6 !important; }
+
+        .day-cell.temp-remove { opacity: 0.6; }
+
+        .bg-Marius { background: #e67e22; }
+        .bg-Andreea { background: #3498db; }
+        .bg-Uka { background: #27ae60; }
+        .bg-Flori { background: #f1c40f; color: #333 !important; }
+        .bg-Gabriel { background: #9b59b6; }
+
+        .summary-section {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 12px;
+        }
+
+        .summary-title {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .person-summary-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 4px solid;
+        }
+
+        .person-summary-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .person-summary-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .person-summary-name {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .months-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .month-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            padding: 3px 8px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .month-item-name {
+            color: #666;
+        }
+
+        .month-item-days {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .no-data {
+            color: #999;
+            font-size: 11px;
+            font-style: italic;
+        }
+
+        @media (max-width: 1100px) {
+            .save-panel {
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                transform: none;
+                width: auto;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .months-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .save-panel {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                top: auto;
+                border-radius: 12px 12px 0 0;
+                max-height: 50vh;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗓️ Calendar Concedii 2026</h1>
+        <p class="subtitle">Selectează persoana → alege zilele → apasă Salvare</p>
+
+        <div class="top-controls">
+            <div class="vacation-allowance-box">
+                <div class="allowance-title">📋 Zile de concediu</div>
+                <div class="allowance-grid" id="allowanceGrid"></div>
+            </div>
+
+            <div class="person-selector">
+                <div class="person-selector-title">Selectează persoana:</div>
+                <div id="personSelector" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+            </div>
+
+            <div class="legend">
+                <span class="legend-title">Tip zile:</span>
+                <div class="legend-item">
+                    <div class="legend-box" style="background:#f0f0f0;border:1px solid #ddd;"></div>
+                    Weekend
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background:#c0392b;"></div>
+                    Sărbătoare legală
+                </div>
+            </div>
+        </div>
+
+        <!-- Banner activ cu X -->
+        <div id="activeBanner" class="active-person-banner" style="display:none;">
+            <div class="active-person-text">
+                <div class="active-person-badge" id="activeBadge">?</div>
+                <div>
+                    <div style="font-size: 11px; opacity: 0.8;">Persoană selectată</div>
+                    <div id="activePersonName" style="font-size: 16px; font-weight: 700;">-</div>
+                </div>
+            </div>
+            <button class="btn-close-x" onclick="clearSelection()" title="Deselectează persoana">×</button>
+        </div>
+
+        <!-- PANOU SALVARE - permanent în dreapta -->
+        <div class="save-panel" id="savePanel">
+            <div class="save-panel-header">
+                <div class="save-panel-badge" id="savePanelBadge">?</div>
+                <div>
+                    <div class="save-panel-title" id="savePanelTitle">-</div>
+                    <div class="save-panel-count" id="savePanelCount">0 modificări</div>
+                </div>
+            </div>
+            <div id="savePanelContent"></div>
+            <button class="btn-save-final" id="btnSaveFinal" onclick="saveToCalendar()" disabled>
+                💾 Salvare
+            </button>
+        </div>
+
+        <!-- POP-UP INFO ZI -->
+        <div class="overlay" id="dayInfoOverlay" onclick="closeDayInfoPopup()" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;opacity:0;visibility:hidden;transition:all 0.2s;"></div>
+        <div class="day-info-popup" id="dayInfoPopup">
+            <div class="day-info-header">
+                <div class="day-info-date-box">
+                    <div class="day-info-day-num" id="dayInfoDayNum">-</div>
+                    <div class="day-info-day-month" id="dayInfoMonth">-</div>
+                </div>
+                <div class="day-info-title">
+                    <div class="day-info-weekday" id="dayInfoWeekday">-</div>
+                    <div class="day-info-year" id="dayInfoYear">2026</div>
+                </div>
+            </div>
+            <div class="day-info-content" id="dayInfoContent"></div>
+            <button class="btn-close-day-info" onclick="closeDayInfoPopup()">Închide</button>
+        </div>
+
+        <div class="main-content">
+            <div class="calendar-area">
+                <div class="months-grid" id="monthsGrid"></div>
+            </div>
+        </div>
+
+        <div class="summary-section">
+            <div class="summary-title">📊 Zile de concediu pe luni</div>
+            <div class="summary-grid" id="summaryGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        const PERSONS = ['Marius', 'Andreea', 'Uka', 'Flori', 'Gabriel'];
+        const COLORS = {
+            'Marius': '#e67e22',
+            'Andreea': '#3498db',
+            'Uka': '#27ae60',
+            'Flori': '#f1c40f',
+            'Gabriel': '#9b59b6'
+        };
+        const MONTH_NAMES = ['Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun', 'Iul', 'Aug', 'Sep', 'Oct', 'Noi', 'Dec'];
+        const MONTH_NAMES_FULL = ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'];
+        const MONTH_COLORS = ['#e74c3c', '#e67e22', '#f39c12', '#27ae60', '#16a085', '#2980b9', '#8e44ad', '#c0392b', '#d35400', '#7f8c8d', '#2c3e50', '#1abc9c'];
+        const DAY_NAMES = ['Lu', 'Ma', 'Mi', 'Jo', 'Vi', 'Sâ', 'Du'];
+        const DAY_NAMES_FULL = ['Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă', 'Duminică'];
+
+        // SĂRBĂTORI LEGALE 2026
+        const LEGAL_HOLIDAYS_2026 = {
+            '2026-01-01': 'Anul Nou',
+            '2026-01-02': 'Anul Nou 2',
+            '2026-01-06': 'Bobotează',
+            '2026-01-07': 'Sf. Ion',
+            '2026-01-24': 'Ziua Unirii',
+            '2026-04-10': 'Vinerea Mare',
+            '2026-04-12': 'Paște Ortodox',
+            '2026-04-13': 'Paște 2',
+            '2026-05-01': 'Ziua Muncii',
+            '2026-05-31': 'Rusalii',
+            '2026-06-01': 'Rusalii 2, Ziua Copilului',
+            '2026-08-15': 'Adormirea Maicii Domnului',
+            '2026-11-30': 'Sf. Andrei',
+            '2026-12-01': 'Ziua Națională',
+            '2026-12-25': 'Crăciun',
+            '2026-12-26': 'Crăciun 2'
+        };
+
+        let vacations = JSON.parse(localStorage.getItem('vacations2026')) || [];
+        let vacationAllowance = JSON.parse(localStorage.getItem('vacationAllowance2026')) || {};
+        let selectedPerson = null;
+        let daysToAdd = new Set();
+        let daysToRemove = new Set();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            PERSONS.forEach(p => {
+                if (!vacationAllowance[p]) vacationAllowance[p] = 20;
+            });
+            renderAllowance();
+            renderPersonSelector();
+            renderMonths();
+            renderSummary();
+        });
+
+        function renderAllowance() {
+            const grid = document.getElementById('allowanceGrid');
+            grid.innerHTML = PERSONS.map(p => {
+                const used = calculateTotalDays(p);
+                const total = vacationAllowance[p];
+                const remaining = total - used;
+                
+                let remainingClass = 'remaining';
+                if (remaining <= 0) remainingClass += ' danger';
+                else if (remaining <= 5) remainingClass += ' warning';
+                
+                return `
+                    <div class="person-allowance-card">
+                        <button class="edit-allowance-btn" onclick="toggleEditSection('${p}')" title="Editează">✎</button>
+                        
+                        <div class="person-allowance-main">
+                            <div class="person-allowance-badge bg-${p}">${p[0]}</div>
+                            <div class="person-allowance-info">
+                                <div class="person-allowance-name">${p}</div>
+                                <div class="allowance-numbers">
+                                    <div class="allowance-number">
+                                        <span class="allowance-number-label">Folosite</span>
+                                        <span class="allowance-number-value used">${used}</span>
+                                    </div>
+                                    <div class="allowance-number">
+                                        <span class="allowance-number-label">Rămase</span>
+                                        <span class="allowance-number-value ${remainingClass}">${remaining}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="allowance-edit-section" id="edit-section-${p}">
+                            <div class="allowance-input-group">
+                                <label>Total zile pe an:</label>
+                                <input type="number" id="input-${p}" value="${total}" min="0" max="365">
+                                <button class="btn-small btn-primary" onclick="saveAllowance('${p}')">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleEditSection(p) {
+            document.getElementById(`edit-section-${p}`).classList.toggle('show');
+        }
+
+        function saveAllowance(p) {
+            vacationAllowance[p] = parseInt(document.getElementById(`input-${p}`).value) || 0;
+            localStorage.setItem('vacationAllowance2026', JSON.stringify(vacationAllowance));
+            renderAllowance();
+        }
+
+        function calculateTotalDays(p) {
+            return vacations.filter(v => v.person === p).reduce((sum, v) => {
+                return sum + calculateWorkingDays(v.start, v.end);
+            }, 0);
+        }
+
+        function renderPersonSelector() {
+            document.getElementById('personSelector').innerHTML = PERSONS.map(p => `
+                <button class="person-btn bg-${p} ${p === selectedPerson ? 'selected' : ''}" 
+                        onclick="selectPerson('${p}')">${p}</button>
+            `).join('');
+        }
+
+        function selectPerson(p) {
+            selectedPerson = p;
+            daysToAdd.clear();
+            daysToRemove.clear();
+            
+            const banner = document.getElementById('activeBanner');
+            banner.style.display = 'flex';
+            banner.style.borderColor = COLORS[p];
+            banner.style.background = `${COLORS[p]}15`;
+            document.getElementById('activeBadge').className = `active-person-badge bg-${p}`;
+            document.getElementById('activeBadge').textContent = p[0];
+            document.getElementById('activePersonName').textContent = p;
+            document.getElementById('activePersonName').style.color = COLORS[p];
+            
+            updateSavePanel();
+            renderPersonSelector();
+            renderMonths();
+        }
+
+        function clearSelection() {
+            selectedPerson = null;
+            daysToAdd.clear();
+            daysToRemove.clear();
+            document.getElementById('activeBanner').style.display = 'none';
+            document.getElementById('savePanel').classList.remove('show');
+            renderPersonSelector();
+            renderMonths();
+        }
+
+        function updateSavePanel() {
+            const panel = document.getElementById('savePanel');
+            const totalChanges = daysToAdd.size + daysToRemove.size;
+
+            if (!selectedPerson || totalChanges === 0) {
+                panel.classList.remove('show');
+                return;
+            }
+
+            panel.classList.add('show');
+            panel.style.borderColor = COLORS[selectedPerson];
+
+            document.getElementById('savePanelBadge').className = `save-panel-badge bg-${selectedPerson}`;
+            document.getElementById('savePanelBadge').textContent = selectedPerson[0];
+            document.getElementById('savePanelTitle').textContent = selectedPerson;
+            document.getElementById('savePanelTitle').style.color = COLORS[selectedPerson];
+            document.getElementById('savePanelCount').textContent = `${daysToAdd.size} adăugări, ${daysToRemove.size} ștergeri`;
+
+            let content = '';
+
+            if (daysToAdd.size > 0) {
+                content += `
+                    <div class="save-panel-section">
+                        <div class="save-panel-section-title">🟢 De adăugat</div>
+                        <div class="save-panel-days">
+                            ${Array.from(daysToAdd).sort().map(d => formatDayForPanel(d, 'add')).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (daysToRemove.size > 0) {
+                content += `
+                    <div class="save-panel-section">
+                        <div class="save-panel-section-title">🔴 De șters</div>
+                        <div class="save-panel-days">
+                            ${Array.from(daysToRemove).sort().map(d => formatDayForPanel(d, 'remove')).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('savePanelContent').innerHTML = content;
+
+            const btn = document.getElementById('btnSaveFinal');
+            btn.disabled = false;
+            btn.classList.add('active');
+            btn.style.background = COLORS[selectedPerson];
+        }
+
+        function formatDayForPanel(dateStr, type) {
+            const [y, m, d] = dateStr.split('-');
+            const date = new Date(dateStr);
+            const weekday = DAY_NAMES[date.getDay()];
+            return `
+                <div class="save-panel-day ${type}">
+                    <span class="save-panel-day-date">${weekday}, ${d}.${m}</span>
+                    <button class="save-panel-day-remove" onclick="removeFromSelection('${dateStr}', '${type}')">×</button>
+                </div>
+            `;
+        }
+
+        function removeFromSelection(dateStr, type) {
+            if (type === 'add') {
+                daysToAdd.delete(dateStr);
+            } else {
+                daysToRemove.delete(dateStr);
+            }
+            renderMonths();
+            updateSavePanel();
+        }
+
+        function saveToCalendar() {
+            if (daysToAdd.size === 0 && daysToRemove.size === 0) return;
+
+            daysToAdd.forEach(d => addDayToVacation(d));
+            daysToRemove.forEach(d => removeDayFromVacation(d));
+
+            localStorage.setItem('vacations2026', JSON.stringify(vacations));
+
+            daysToAdd.clear();
+            daysToRemove.clear();
+
+            // ASCUNDE BANNERUL DUPĂ SALVARE
+            document.getElementById('savePanel').classList.remove('show');
+            document.getElementById('activeBanner').style.display = 'none';
+            selectedPerson = null;
+
+            renderPersonSelector();
+            renderMonths();
+            renderAllowance();
+            renderSummary();
+        }
+
+        function addDayToVacation(dateStr) {
+            const prevStr = new Date(new Date(dateStr).getTime() - 86400000).toISOString().split('T')[0];
+            const nextStr = new Date(new Date(dateStr).getTime() + 86400000).toISOString().split('T')[0];
+
+            const prevV = vacations.find(v => v.person === selectedPerson && v.end === prevStr);
+            const nextV = vacations.find(v => v.person === selectedPerson && v.start === nextStr);
+
+            if (prevV && nextV) {
+                prevV.end = nextV.end;
+                vacations = vacations.filter(v => v !== nextV);
+            } else if (prevV) {
+                prevV.end = dateStr;
+            } else if (nextV) {
+                nextV.start = dateStr;
+            } else {
+                vacations.push({
+                    id: Date.now() + Math.random(),
+                    person: selectedPerson,
+                    start: dateStr,
+                    end: dateStr
+                });
+            }
+        }
+
+        function removeDayFromVacation(dateStr) {
+            const idx = vacations.findIndex(v => {
+                if (v.person !== selectedPerson) return false;
+                const s = new Date(v.start), e = new Date(v.end), d = new Date(dateStr);
+                return d >= s && d <= e;
+            });
+
+            if (idx === -1) return;
+
+            const v = vacations[idx];
+            const vs = new Date(v.start), ve = new Date(v.end), dt = new Date(dateStr);
+
+            if (vs.getTime() === ve.getTime()) {
+                vacations.splice(idx, 1);
+            } else if (dt.getTime() === vs.getTime()) {
+                v.start = new Date(vs.getTime() + 86400000).toISOString().split('T')[0];
+            } else if (dt.getTime() === ve.getTime()) {
+                v.end = new Date(ve.getTime() - 86400000).toISOString().split('T')[0];
+            } else {
+                const newStart = new Date(dt.getTime() + 86400000).toISOString().split('T')[0];
+                vacations.push({ id: Date.now() + Math.random(), person: selectedPerson, start: newStart, end: v.end });
+                v.end = new Date(dt.getTime() - 86400000).toISOString().split('T')[0];
+            }
+        }
+
+        // POP-UP INFO ZI
+        function showDayInfoPopup(dateStr) {
+            const [year, month, day] = dateStr.split('-');
+            const date = new Date(dateStr);
+            const dow = date.getDay();
+            const holiday = LEGAL_HOLIDAYS_2026[dateStr];
+
+            // Populează header
+            document.getElementById('dayInfoDayNum').textContent = day;
+            document.getElementById('dayInfoMonth').textContent = MONTH_NAMES_FULL[parseInt(month) - 1];
+            document.getElementById('dayInfoWeekday').textContent = DAY_NAMES_FULL[dow];
+            document.getElementById('dayInfoYear').textContent = year;
+
+            // Găsește vacanțele pentru ziua respectivă
+            const dayVacations = vacations.filter(v => {
+                const s = new Date(v.start), e = new Date(v.end);
+                return date >= s && date <= e;
+            });
+
+            let content = '';
+
+            // Sărbătoare sau weekend
+            if (holiday) {
+                content += `
+                    <div class="day-info-holiday">
+                        🎉 ${holiday}
+                    </div>
+                `;
+            } else if (dow === 0 || dow === 6) {
+                content += `
+                    <div class="day-info-weekend">
+                        📅 Weekend (zi liberă)
+                    </div>
+                `;
+            }
+
+            // Persoane în concediu
+            if (dayVacations.length > 0) {
+                content += `
+                    <div class="day-info-section">
+                        <div class="day-info-section-title">👥 Persoane în concediu</div>
+                        <div class="day-info-person-list">
+                            ${dayVacations.map(v => `
+                                <div class="day-info-person" style="background: ${COLORS[v.person]}20;">
+                                    <div class="day-info-person-badge bg-${v.person}">${v.person[0]}</div>
+                                    <div class="day-info-person-name" style="color: ${COLORS[v.person]};">${v.person}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                content += `
+                    <div class="day-info-section empty">
+                        ✓ Nicio persoană în concediu în această zi
+                    </div>
+                `;
+            }
+
+            document.getElementById('dayInfoContent').innerHTML = content;
+
+            // Arată pop-up
+            document.getElementById('dayInfoOverlay').style.opacity = '1';
+            document.getElementById('dayInfoOverlay').style.visibility = 'visible';
+            document.getElementById('dayInfoPopup').classList.add('show');
+        }
+
+        function closeDayInfoPopup() {
+            document.getElementById('dayInfoOverlay').style.opacity = '0';
+            document.getElementById('dayInfoOverlay').style.visibility = 'hidden';
+            document.getElementById('dayInfoPopup').classList.remove('show');
+        }
+
+        function renderMonths() {
+            const grid = document.getElementById('monthsGrid');
+            grid.innerHTML = '';
+
+            for (let m = 0; m < 12; m++) {
+                const section = document.createElement('div');
+                section.className = 'month-section';
+
+                const firstDay = new Date(2026, m, 1);
+                const lastDay = new Date(2026, m + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startDow = (firstDay.getDay() + 6) % 7;
+
+                section.innerHTML = `
+                    <div class="month-header" style="background:${MONTH_COLORS[m]}">${MONTH_NAMES[m]}</div>
+                    <table class="month-table">
+                        <thead><tr>${DAY_NAMES.map(d => `<th>${d}</th>`).join('')}</tr></thead>
+                        <tbody></tbody>
+                    </table>
+                `;
+
+                const tbody = section.querySelector('tbody');
+                let tr = document.createElement('tr');
+
+                for (let i = 0; i < startDow; i++) tr.appendChild(createEmptyCell());
+
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `2026-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    tr.appendChild(createDayCell(d, dateStr));
+                    if ((startDow + d) % 7 === 0) {
+                        tbody.appendChild(tr);
+                        tr = document.createElement('tr');
+                    }
+                }
+
+                const rem = 7 - ((startDow + daysInMonth) % 7);
+                if (rem < 7) {
+                    for (let i = 0; i < rem; i++) tr.appendChild(createEmptyCell());
+                    tbody.appendChild(tr);
+                }
+
+                grid.appendChild(section);
+            }
+        }
+
+        function createEmptyCell() {
+            const td = document.createElement('td');
+            td.innerHTML = '<div class="day-cell" style="background:#fafafa;"></div>';
+            return td;
+        }
+
+        function createDayCell(day, dateStr) {
+            const td = document.createElement('td');
+            const date = new Date(dateStr);
+            const dow = date.getDay();
+            const isWeekend = dow === 0 || dow === 6;
+            const holiday = LEGAL_HOLIDAYS_2026[dateStr];
+
+            let cellClass = 'day-cell';
+            let content = `<div class="day-number">${day}</div>`;
+
+            // Sărbătoare (oricând) sau weekend
+            if (holiday) {
+                cellClass += ' holiday';
+                if (isWeekend) cellClass += ' weekend';
+                content += `<div class="holiday-name">${holiday}</div>`;
+            } else if (isWeekend) {
+                cellClass += ' weekend';
+            }
+
+            const dayVacations = vacations.filter(v => {
+                const s = new Date(v.start), e = new Date(v.end);
+                return date >= s && date <= e;
+            });
+
+            const hasExisting = selectedPerson && dayVacations.some(v => v.person === selectedPerson);
+            const isToAdd = daysToAdd.has(dateStr);
+            const isToRemove = daysToRemove.has(dateStr);
+
+            if (isToAdd) cellClass += ` temp-add-${selectedPerson}`;
+            else if (isToRemove) cellClass += ' temp-remove';
+
+            // CLICK HANDLER
+            if (selectedPerson && !holiday && !isWeekend) {
+                // Mod editare - selectează ziua
+                td.onclick = () => toggleDay(dateStr);
+            } else {
+                // Mod vizualizare - arată info
+                td.onclick = () => showDayInfoPopup(dateStr);
+            }
+
+            content += '<div class="vacation-indicators">';
+
+            dayVacations.filter(v => v.person !== selectedPerson).forEach(v => {
+                content += `<div class="vac-indicator bg-${v.person}"><span class="vac-indicator-badge">${v.person[0]}</span><span>${v.person}</span></div>`;
+            });
+
+            if (hasExisting && !isToRemove) {
+                content += `<div class="vac-indicator bg-${selectedPerson}"><span class="vac-indicator-badge">${selectedPerson[0]}</span><span>${selectedPerson}</span></div>`;
+            }
+
+            if (isToAdd) {
+                content += `<div class="vac-indicator bg-${selectedPerson} to-add"><span class="vac-indicator-badge">+</span><span>${selectedPerson}</span></div>`;
+            }
+
+            if (isToRemove) {
+                content += `<div class="vac-indicator bg-${selectedPerson} to-remove"><span class="vac-indicator-badge">−</span><span>${selectedPerson}</span></div>`;
+            }
+
+            content += '</div>';
+            td.innerHTML = `<div class="${cellClass}">${content}</div>`;
+            return td;
+        }
+
+        function toggleDay(dateStr) {
+            if (!selectedPerson) return;
+
+            const hasExisting = vacations.some(v => {
+                if (v.person !== selectedPerson) return false;
+                const s = new Date(v.start), e = new Date(v.end);
+                return new Date(dateStr) >= s && new Date(dateStr) <= e;
+            });
+
+            if (hasExisting) {
+                if (daysToRemove.has(dateStr)) {
+                    daysToRemove.delete(dateStr);
+                } else {
+                    daysToRemove.add(dateStr);
+                    daysToAdd.delete(dateStr);
+                }
+            } else {
+                if (daysToAdd.has(dateStr)) {
+                    daysToAdd.delete(dateStr);
+                } else {
+                    daysToAdd.add(dateStr);
+                    daysToRemove.delete(dateStr);
+                }
+            }
+
+            renderMonths();
+            updateSavePanel();
+        }
+
+        function renderSummary() {
+            document.getElementById('summaryGrid').innerHTML = PERSONS.map(p => {
+                const monthsData = Array(12).fill(0);
+
+                vacations.filter(v => v.person === p).forEach(v => {
+                    let d = new Date(v.start);
+                    const end = new Date(v.end);
+                    while (d <= end) {
+                        const m = d.getMonth();
+                        const ds = d.toISOString().split('T')[0];
+                        if (!isWeekendOrHoliday(ds)) monthsData[m]++;
+                        d.setDate(d.getDate() + 1);
+                    }
+                });
+
+                const hasData = monthsData.some(x => x > 0);
+
+                return `
+                    <div class="person-summary-card" style="border-left-color:${COLORS[p]}">
+                        <div class="person-summary-header">
+                            <div class="person-summary-badge bg-${p}">${p[0]}</div>
+                            <div class="person-summary-name">${p}</div>
+                        </div>
+                        ${hasData ? `
+                            <div class="months-list">
+                                ${monthsData.map((days, i) => days > 0 ? `
+                                    <div class="month-item">
+                                        <span class="month-item-name">${MONTH_NAMES[i]}</span>
+                                        <span class="month-item-days">${days} zile</span>
+                                    </div>
+                                ` : '').join('')}
+                            </div>
+                        ` : '<div class="no-data">Nicio zi de concediu</div>'}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function isWeekendOrHoliday(dateStr) {
+            const d = new Date(dateStr);
+            if (LEGAL_HOLIDAYS_2026[dateStr]) return true;
+            return d.getDay() === 0 || d.getDay() === 6;
+        }
+
+        function calculateWorkingDays(startStr, endStr) {
+            let count = 0;
+            let d = new Date(startStr);
+            const end = new Date(endStr);
+            while (d <= end) {
+                if (!isWeekendOrHoliday(d.toISOString().split('T')[0])) count++;
+                d.setDate(d.getDate() + 1);
+            }
+            return count;
+        }
+    </script>
+</body>
+</html>
